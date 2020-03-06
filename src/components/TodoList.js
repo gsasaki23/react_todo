@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 const TodoList = props => {
     // destructure state and setter method off of useState hook
@@ -18,14 +18,20 @@ const TodoList = props => {
         });
     }
 
+    // For resetting input
+    const todoInput = useRef(null);
+
     // whenever new todo submitted
     const onSubmitHandler = event => {
-        event.preventDefault();
+        event.preventDefault();        
+
         // list1.concat(list2) merges lists. here, merges two lists of todo objects
         setState({
             ...state,
             todo_items: state.todo_items.concat([{content: event.target.todo.value, completed: false}]),
         });
+        // resets input
+        todoInput.current.value = "";
     }
     
 
@@ -58,9 +64,9 @@ const TodoList = props => {
         <div>
             <form onSubmit={onSubmitHandler}>
                 <div>
-                    <input type="text" name="todo" placeholder="Write something to do..." onChange={onChangeHandler}/>
-                    {/* show add button when input isn't blank */}
-                    {state.todo.length > 0 && <input type="submit"></input>}
+                    <input type="text" name="todo" placeholder="Write something to do..." onChange={onChangeHandler} ref={todoInput}/>
+                    {/* show add button when input isn't blank AND it's not already in the list */}
+                    {state.todo.length > 0 && state.todo_items.filter((obj)=>{return obj.content === state.todo}).length ===0 && <input type="submit"></input>}
                 </div>
             </form>
             <div>
