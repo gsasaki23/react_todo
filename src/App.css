@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.App form div input{
+  margin: 1% auto;
+  padding: 1%;
+  display: block;
+}
+
+.App ul{
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.App ul li{
+  display: block;
+  padding: 5px;
+}
