@@ -18,8 +18,6 @@ const TodoList = props => {
         });
     }
 
-    const new_todo = {content: "", completed: false};
-    
     // whenever new todo submitted
     const onSubmitHandler = event => {
         event.preventDefault();
@@ -38,7 +36,23 @@ const TodoList = props => {
             todo_items: state.todo_items.filter((obj)=>{return obj.content !== state.todo_items[event.target.name].content})
         });
     }
-    
+
+    const completeTodoHandler = event => {
+        // overwrite state
+        setState({
+            ...state,
+            todo_items: state.todo_items.map((obj)=>{
+                if (obj.content === state.todo_items[event.target.name].content){
+                    obj.completed = !obj.completed;
+                }
+                return obj;
+            })
+        });
+    }
+
+    const completedStyle = {
+        textDecoration: "line-through"
+    };
 
     return(
         <div>
@@ -52,10 +66,16 @@ const TodoList = props => {
             <div>
                 <ul>
                     {state.todo_items.map((todo_item, idx)=>{
-                        return <li key={idx}>
+                        // if item's complete is false ? render with no style : render with style
+                        return todo_item.completed === false ? <li key={idx}>
                             {todo_item.content}
+                            <input type="checkbox" name={idx} onChange={completeTodoHandler}/>
                             <button name={idx} onClick={deleteTodoHandler}>Delete</button>
-                        </li>
+                        </li> : <li key={idx} style={completedStyle}>
+                        {todo_item.content}
+                        <input type="checkbox" name={idx} onChange={completeTodoHandler}/>
+                        <button name={idx} onClick={deleteTodoHandler}>Delete</button>
+                    </li>
                     })}
                 </ul>
             </div>
