@@ -1,14 +1,26 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const TodoList = props => {
+const TodoList = () => {
     // destructure state and setter method off of useState hook
     const [ state, setState ] = useState({
         // array with "todo item" objects that have content as key and completion bool as value
         todo_items: [],
         // str to help hide the submit button until input is made
         todo:"",
-    })
-    
+    });
+    useEffect(()=>{
+        setState({
+            todo_items: JSON.parse(localStorage.getItem('list_store')),
+            todo:""
+        });
+    }, []);
+
+    useEffect(()=>{
+        localStorage.setItem('list_store', JSON.stringify(state.todo_items));
+    }, [state.todo_items]);
+
+
+
     // whenever change detected, update state
     const onChangeHandler = event => {
         // copy of state by using spread, .name and .value correspond to input
@@ -17,11 +29,8 @@ const TodoList = props => {
             [event.target.name]: event.target.value,
         });
     }
-
-    // For resetting input
-    const todoInput = useRef(null);
-
-    // whenever new todo submitted
+    
+    // Whenever new todo submitted
     const onSubmitHandler = event => {
         event.preventDefault();        
 
@@ -32,17 +41,19 @@ const TodoList = props => {
         });
         // resets input
         todoInput.current.value = "";
-    }
+        
+    }
     
 
-    // Filter out matching todo obj meant to be deleted
+    // Whenever todo is deleted
     const deleteTodoHandler = event => {
         setState({
             ...state,
             todo_items: state.todo_items.filter((obj)=>{return obj.content !== state.todo_items[event.target.name].content})
         });
     }
-
+    
+    // Whenever todo is marked as complete
     const completeTodoHandler = event => {
         // overwrite state
         setState({
@@ -55,6 +66,9 @@ const TodoList = props => {
             })
         });
     }
+    
+    // For resetting input
+    const todoInput = useRef(null);
 
     const completedStyle = {
         textDecoration: "line-through"

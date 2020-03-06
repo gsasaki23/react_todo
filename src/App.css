@@ -51,6 +51,7 @@
 .App ul li{
   display: block;
   padding: 5px;
+  font-size: larger;
 }
 
 .App ul li button{
